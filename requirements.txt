@@ -1,0 +1,17 @@
+# Retrieval
+sentence-transformers   # EmbeddingGemma
+rank-bm25
+numpy
+
+# Corpus / IO
+pypdf                   # only if re-chunking the raw PDFs
+pandas
+
+# Generation (Kaggle)
+transformers>=5.15      # Gemma 4 (gemma4_unified) needs >=5.15
+torch
+accelerate
+bitsandbytes
+kagglehub
+
+pytest
