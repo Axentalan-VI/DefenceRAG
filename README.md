@@ -17,16 +17,16 @@ citation/abstention answering, repointed at the defence corpus.
 - **Submission:** `id, prediction, pred_source, pred_section` -- an answer plus
   the source PDF and a `section-1..12` bucket.
 
-## Status (Day 1)
+## Status (Day 2)
 
-- **`pred_source` solved rule-based: 140/140.** Every test question names its
-  source ("DPM 2025 Volume II", "Navy Regulations Part III", "DFPDS Booklet
-  2024"); `attribute.parse_source` recovers it exactly, beating retrieval (which
-  confuses Vol I/II and Navy Parts I-IV).
-- **Baseline submission builds and validates** against `sample_submission.csv`
-  (140 rows, exact schema): `submit.build_submission`. Predictions are extractive
-  snippets for now; `pred_section` is a placeholder.
-- **18 tests pass** (corpus, attribution incl. the 140/140 guard, submission shape).
+- **Grounded generation pipeline** (`generate.py`): retrieval restricted to the
+  question's `pred_source`, a defence-specific grounded prompt, injectable
+  generator so the loop is tested offline with a stub (22 tests pass).
+- **Kaggle submission notebook** (`notebooks/defrag_submit.ipynb`): rule-based
+  source + BM25-within-document + **Gemma-4 E4B** generation (bf16, `disable_mmap`,
+  transformers>=5.15 upgrade cell). Writes `/kaggle/working/submission.csv`. The
+  inlined parser was verified identical to the tested module (140/140).
+- E4B is the default generator (mounts reliably vs the 12B's partial-mount issue).
 
-Next: Day 2 swaps the extractive baseline for Gemma-4 grounded generation on
-Kaggle. Still blocked on Step 1 (metric + `section-1..12`) for tuning.
+Next: run the notebook on Kaggle for a real answer-quality submission; resolve
+Step 1 (metric + `section-1..12`) to tune `prediction` and fix `pred_section`.
