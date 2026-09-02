@@ -44,3 +44,29 @@ def test_first_is_a_single_sentence(tmp_path):
     rows = list(csv.DictReader(out.open(encoding="utf-8")))
     # one sentence -> at most one internal '. ' break
     assert rows[0]["prediction"].count(". ") <= 1
+
+
+def test_oracle_maps_every_question_and_matches_clusters():
+    """Every question resolves to exactly one reference template, balanced 6-way."""
+    import csv as _csv
+    from collections import Counter
+    from defrag.synth import _answer_theme
+    rows = list(_csv.DictReader((ROOT / "data/raw/test.csv").open(encoding="utf-8")))
+    themes = [_answer_theme(r["question"]) for r in rows]
+    assert all(t is not None for t in themes), "an unmapped question template"
+    dist = Counter(themes)
+    assert len(dist) == 6
+    assert all(20 <= n <= 25 for n in dist.values()), dist
+
+
+def test_oracle_answer_uses_correct_document(tmp_path):
+    import csv as _csv
+    out = tmp_path / "oracle.csv"
+    build(ROOT / "data/raw/test.csv", out, "oracle")
+    rows = list(_csv.DictReader(out.open(encoding="utf-8")))
+    # id1 is an authority question about DPM Volume I
+    assert "Volume I" in rows[0]["prediction"]
+    assert "role-based authority thresholds" in rows[0]["prediction"]
+    # id2 is an escalation question about DPM Volume II
+    assert "escalation to the higher competent authority" in rows[1]["prediction"]
+    assert "Volume II" in rows[1]["prediction"]
