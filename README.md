@@ -17,21 +17,16 @@ citation/abstention answering, repointed at the defence corpus.
 - **Submission:** `id, prediction, pred_source, pred_section` -- an answer plus
   the source PDF and a `section-1..12` bucket.
 
-## Status (Day 0)
+## Status (Day 1)
 
-- Repo + vendored Covered modules (`src/defrag/{chunk,index,models,rag,corpus}.py`).
-- `corpus.load_metadata_chunks` maps metaData -> the reused `Chunk` type; **5
-  tests pass**, all 7 documents present.
-- Hybrid index builds over 1,668 chunks; retrieval smoke on the real questions
-  lands the right document family for most.
-- **Finding:** questions usually name their source explicitly ("Under DPM 2025
-  Volume I", "Navy Regulations Part II", "DFPDS Booklet 2024") -> `pred_source` is
-  largely recoverable by a question->document parser, likely beating retrieval for
-  attribution.
+- **`pred_source` solved rule-based: 140/140.** Every test question names its
+  source ("DPM 2025 Volume II", "Navy Regulations Part III", "DFPDS Booklet
+  2024"); `attribute.parse_source` recovers it exactly, beating retrieval (which
+  confuses Vol I/II and Navy Parts I-IV).
+- **Baseline submission builds and validates** against `sample_submission.csv`
+  (140 rows, exact schema): `submit.build_submission`. Predictions are extractive
+  snippets for now; `pred_section` is a placeholder.
+- **18 tests pass** (corpus, attribution incl. the 140/140 guard, submission shape).
 
-## Blocking (Step 1)
-
-The **metric** (`metric_template 4b2689`) and the **`section-1..12` scheme** are
-defined only on the Evaluation tab (JS-rendered, unfetchable here). Read them
-in-browser on the joined competition page before tuning generation; the plan has
-working defaults and a leaderboard-probe fallback.
+Next: Day 2 swaps the extractive baseline for Gemma-4 grounded generation on
+Kaggle. Still blocked on Step 1 (metric + `section-1..12`) for tuning.
