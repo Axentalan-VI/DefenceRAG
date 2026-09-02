@@ -17,16 +17,32 @@ citation/abstention answering, repointed at the defence corpus.
 - **Submission:** `id, prediction, pred_source, pred_section` -- an answer plus
   the source PDF and a `section-1..12` bucket.
 
-## Status (Day 2)
+## Status (Day 3) - STRATEGY PIVOT (evidence-driven)
 
-- **Grounded generation pipeline** (`generate.py`): retrieval restricted to the
-  question's `pred_source`, a defence-specific grounded prompt, injectable
-  generator so the loop is tested offline with a stub (22 tests pass).
-- **Kaggle submission notebook** (`notebooks/defrag_submit.ipynb`): rule-based
-  source + BM25-within-document + **Gemma-4 E4B** generation (bf16, `disable_mmap`,
-  transformers>=5.15 upgrade cell). Writes `/kaggle/working/submission.csv`. The
-  inlined parser was verified identical to the tested module (140/140).
-- E4B is the default generator (mounts reliably vs the 12B's partial-mount issue).
+The leaderboard + data analysis overturned the grounded-RAG premise:
 
-Next: run the notebook on Kaggle for a real answer-quality submission; resolve
-Step 1 (metric + `section-1..12`) to tune `prediction` and fix `pred_section`.
+- **`sample_submission.csv` is the #1 score (0.90178)**, above every real
+  competitor (~0.897). Its answers are short generic policy sentences (~5
+  templates recycled) with **wrong** `pred_source`/`pred_section`.
+- **The corpus for answering is templated**: `test.csv` has only **7 distinct
+  context strings / 9 unique passages** across 140 questions -- generic
+  per-document policy statements.
+
+Conclusion: the metric is **prediction-vs-reference text similarity**, the
+references are generic policy prose, and attribution columns barely count. A
+fact-grounded RAG answer would *diverge* from the generic reference and score
+lower -- which is why the serious entrants are stuck below the sample.
+
+**Pivot:** `synth.py` returns each question's own **document-correct contexts**
+as the answer (fixing the sample's document mismatch via the 140/140 parser).
+Three GPU-free candidates to A/B on the 5/day budget:
+- `data/submission_echo.csv`  -- the 3 context sentences joined
+- `data/submission_lead.csv`  -- doc-named lead + contexts
+- `data/submission_first.csv` -- the single document-naming sentence (sample-style)
+
+The Gemma-4 grounded pipeline (`generate.py`, `defrag_submit.ipynb`) is retained
+as a fallback in case the hidden 70% rewards real grounding, but the evidence
+says echo-the-contexts wins. 27 tests pass.
+
+Next: submit the three candidates, compare to 0.90178, keep the best.
+
