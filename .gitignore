@@ -5,3 +5,10 @@ __pycache__/
 .ipynb_checkpoints/
 data/raw/*.pdf
 data/index/
+
+# Competition data is never committed -- fetch it from Kaggle (see README).
+data/raw/
+sample_submission.csv
+# Generated submissions reproduce the competition's own answer templates verbatim;
+# regenerate them with scripts/ instead of committing them.
+data/submission*.csv
