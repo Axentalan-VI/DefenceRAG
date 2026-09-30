@@ -17,6 +17,19 @@ citation/abstention answering, repointed at the defence corpus.
 - **Submission:** `id, prediction, pred_source, pred_section` -- an answer plus
   the source PDF and a `section-1..12` bucket.
 
+## Data
+
+Competition data is **not** committed to this repo -- fetch it from Kaggle:
+
+```bash
+kaggle competitions download -c defence-rag-procurement-policy-reasoning-challenge-2026
+unzip -d data/raw defence-rag-procurement-policy-reasoning-challenge-2026.zip
+```
+
+That gives `data/raw/{metaData.csv,test.csv,sample_submission.csv}`. The
+`data/submission*.csv` files are likewise uncommitted -- regenerate them with
+`scripts/reconstruct.py` and `scripts/attrib.py` once the raw data is in place.
+
 ## Status (Day 3) - BREAKTHROUGH: exact template mapping
 
 Probes settled the metric empirically: contexts 0.35-0.40; single canonical
