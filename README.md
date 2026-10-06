@@ -57,3 +57,7 @@ exact template mapping reaches but does not exceed: only the prediction text is
 scored, and the remaining gap is answer phrasing the mapping cannot recover.
 That makes further submissions a poor use of effort, so the work is finished as
 a write-up of the reverse-engineering rather than a leaderboard chase.
+
+**Full write-up: [WRITEUP.md](WRITEUP.md)** -- the probes in the order they
+were run, what each one ruled out, and why 0.89769 still falls short of the
+sample's 0.90178.
