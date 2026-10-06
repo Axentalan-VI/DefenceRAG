@@ -51,7 +51,8 @@ The `oracle` strategy applies the correct answer template to all 140 rows. No
 LLM and no RAG -- a deterministic template lookup, with the document resolved
 by a parser that handles 140/140.
 
-**What it scored: 0.898.** So the benchmark has a hard ceiling around 0.90 that
+**What it scored: 0.898**, which finished **3rd of 13 teams** when the
+competition closed on 2026-09-29. So the benchmark has a hard ceiling around 0.90 that
 exact template mapping reaches but does not exceed: only the prediction text is
 scored, and the remaining gap is answer phrasing the mapping cannot recover.
 That makes further submissions a poor use of effort, so the work is finished as
